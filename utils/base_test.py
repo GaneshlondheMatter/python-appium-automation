@@ -51,3 +51,4 @@ class BaseTest:
         if BaseTest.driver:
             BaseTest.driver.quit()
             print("Driver quit successfully")
+            

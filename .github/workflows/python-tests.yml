@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-name: Android Appium Tests
-=======
 name: Android Appium Python Tests
->>>>>>> 5588bde413ae04513306ad027b148b49af2eb454
 
 on:
   push:
@@ -14,52 +10,6 @@ jobs:
   android-tests:
     runs-on: ubuntu-latest
 
-<<<<<<< HEAD
-    steps:
-    # 1️⃣ Checkout code
-    - name: Checkout repository
-      uses: actions/checkout@v4
-
-    # 2️⃣ Setup Python
-    - name: Setup Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
-
-    # 3️⃣ Install Python dependencies
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-
-    # 4️⃣ Start Android Emulator (Docker)
-    - name: Start Android Emulator
-      run: |
-        docker run -d \
-          --name android-emulator \
-          -p 4723:4723 \
-          -p 6080:6080 \
-          -e DEVICE="Samsung Galaxy S10" \
-          budtmo/docker-android:emulator_11.0
-
-    # 5️⃣ Wait for emulator to boot
-    - name: Wait for Emulator
-      run: |
-        sleep 60
-        docker exec android-emulator adb devices
-
-    # 6️⃣ Install APK
-    - name: Install APK
-      run: |
-        docker exec android-emulator adb install -r apps/MatterVerseQA_1.91.apk
-
-    # 7️⃣ Run pytest
-    - name: Run tests
-      env:
-        APPIUM_SERVER_URL: http://127.0.0.1:4723
-      run: |
-        pytest -v
-=======
     services:
       emulator:
         image: budtmo/docker-android:emulator_11.0
@@ -70,104 +20,69 @@ jobs:
         options: --privileged
 
     steps:
-      # ----------------------------
-      # Checkout repository (with LFS)
-      # ----------------------------
+      # Checkout repository
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           lfs: true
 
-      # ----------------------------
       # Verify APK exists
-      # ----------------------------
-      - name: Verify APK exists
+      - name: Verify APK
         run: |
-          echo "Listing apps directory"
           ls -lh apps/
           test -f apps/MatterVerseQA_1.91.apk
 
-      # ----------------------------
       # Setup Python
-      # ----------------------------
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      # ----------------------------
       # Install Python dependencies
-      # ----------------------------
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install \
-            pytest \
-            appium-python-client \
-            python-dotenv \
-            pillow
+          pip install -r requirements.txt
 
-      # ----------------------------
       # Setup Node.js (for Appium)
-      # ----------------------------
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      # ----------------------------
       # Install Appium
-      # ----------------------------
       - name: Install Appium
         run: |
           npm install -g appium
           appium -v
 
-      # ----------------------------
       # Wait for Emulator to boot
-      # ----------------------------
       - name: Wait for Emulator
         run: |
-          echo "Waiting for Android emulator to boot..."
+          echo "Waiting for Android emulator..."
           sleep 60
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Emulator container: $EMULATOR_ID"
           docker exec "$EMULATOR_ID" adb wait-for-device
           docker exec "$EMULATOR_ID" adb devices
 
-      # ----------------------------
       # Copy APK into emulator container
-      # ----------------------------
-      - name: Copy APK into Emulator
+      - name: Copy APK to Emulator
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           docker cp apps/MatterVerseQA_1.91.apk "$EMULATOR_ID":/tmp/app.apk
 
-      # ----------------------------
       # Install APK
-      # ----------------------------
       - name: Install APK
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           docker exec "$EMULATOR_ID" adb install -r /tmp/app.apk
 
-      # ----------------------------
       # Start Appium Server
-      # ----------------------------
       - name: Start Appium Server
         run: |
           appium --log-level error &
-          sleep 15
+          sleep 10
 
-      # ----------------------------
-      # Run Pytest
-      # ----------------------------
+      # Run Tests
       - name: Run Appium Tests
-        env:
-          PYTHONPATH: .
-        run: |
-          pytest -v
->>>>>>> 5588bde413ae04513306ad027b148b49af2eb454
-
-
-
+        run: pytest -v

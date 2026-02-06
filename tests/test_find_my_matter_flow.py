@@ -51,7 +51,6 @@ class TestFindMyMatterFlow(BaseTest):
             control_page.find_my_matter_button,
             max_scrolls=8
         )
-        time.sleep(2)
         control_page.find_my_matter_button().click()
 
         # ---------- Screenshot 1 ----------

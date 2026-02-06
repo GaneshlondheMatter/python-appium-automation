@@ -16,7 +16,7 @@ jobs:
       emulator:
         image: budtmo/docker-android:emulator_11.0
         ports:
-          - 6080:6080   # VNC/GUI if needed
+          - 6080:6080   # optional VNC GUI
           - 5554:5554   # emulator
           - 5555:5555   # emulator
           - 4723:4723   # Appium default port
@@ -33,11 +33,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          lfs: true  # if APK is stored via Git LFS
 
       - name: Verify APK exists
         run: |
-          ls -lh apps/
-          test -f apps/MatterVerseQA_1.91.apk
+          echo "Current directory: $(pwd)"
+          ls -lh $PWD/apps/
+          test -f $PWD/apps/MatterVerseQA_1.91.apk
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -59,7 +62,7 @@ jobs:
           npm install -g appium
           appium -v
 
-      - name: Wait for Emulator
+      - name: Wait for Emulator to Boot
         run: |
           echo "Waiting for Android emulator..."
           sleep 60
@@ -70,7 +73,7 @@ jobs:
       - name: Push APK into Emulator
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec "$EMULATOR_ID" adb push apps/MatterVerseQA_1.91.apk /data/local/tmp/app.apk
+          docker exec "$EMULATOR_ID" adb push $PWD/apps/MatterVerseQA_1.91.apk /data/local/tmp/app.apk
 
       - name: Install APK inside Emulator
         run: |
@@ -79,9 +82,34 @@ jobs:
 
       - name: Start Appium Server
         run: |
+          # Start Appium in background (simple)
           nohup appium --port 4723 --log-level error > appium.log 2>&1 &
 
       - name: Run Python Appium Tests
         run: python -m pytest -v
         env:
           APPIUM_SERVER_URL: ${{ env.APPIUM_SERVER_URL }}
+
+      - name: Verify Screenshots
+        run: |
+          mkdir -p ./Screenshots
+          ls -lh ./Screenshots || echo "No screenshots found"
+
+      - name: Generate Allure Report
+        run: |
+          if [ -d "allure-results" ]; then
+            npx allure generate allure-results --clean -o allure-report
+            echo "Allure report generated."
+          else
+            echo "No allure-results found, skipping report generation."
+          fi
+
+      - name: Upload Test Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts
+          path: |
+            ./Screenshots/**/*.png
+            ./allure-report
+          if-no-files-found: ignore

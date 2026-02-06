@@ -16,16 +16,14 @@ jobs:
         ports:
           - 5554:5554
           - 5555:5555
-          - 4723:4723
         options: --privileged
 
     env:
       platformName: Android
       deviceName: Android Emulator
-      andrioid_version: "11"
+      android_version: "11"
       appPackage: com.matter.companion.qa
-      appActivity: .MainActivity
-      appium_server_url: http://127.0.0.1:4723
+      appActivity: com.matter.companion.view.onbording.SplashActivity
 
     steps:
       - name: Checkout code
@@ -76,11 +74,30 @@ jobs:
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           docker exec "$EMULATOR_ID" adb install -r /tmp/app.apk
 
-      - name: Start Appium Server
+      - name: Kill any existing Appium processes
         run: |
-          appium --log-level error &
-          sleep 15
+          pkill -f node || true
+
+      - name: Start Appium Server on a free port
+        run: |
+          PORT=$(shuf -i 4723-4823 -n 1)
+          echo "Using Appium port $PORT"
+          echo "APP_PORT=$PORT" >> $GITHUB_ENV
+          appium -p $PORT --log-level error > appium.log 2>&1 &
+          # Wait until Appium server is ready
+          n=0
+          until curl -s http://127.0.0.1:$PORT/wd/hub/status | grep '"ready":true' > /dev/null; do
+            n=$((n+1))
+            if [ $n -ge 30 ]; then
+              cat appium.log
+              exit 1
+            fi
+            sleep 2
+          done
+          echo "Appium is ready on port $PORT"
 
       - name: Run Appium Tests
         run: |
           python -m pytest -v
+        env:
+          APPIUM_SERVER_URL: http://127.0.0.1:${{ env.APP_PORT }}/wd/hub

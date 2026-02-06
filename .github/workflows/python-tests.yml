@@ -20,49 +20,69 @@ jobs:
         options: --privileged
 
     steps:
+      # Checkout repository
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           lfs: true
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+      # Verify APK exists
+      - name: Verify APK
+        run: |
+          ls -lh apps/
+          test -f apps/MatterVerseQA_1.91.apk
 
+      # Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      # Install Python dependencies
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      # Setup Node.js (for Appium)
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
           node-version: 20
 
+      # Install Appium
       - name: Install Appium
         run: |
           npm install -g appium
           appium -v
 
+      # Wait for Emulator to boot
       - name: Wait for Emulator
         run: |
+          echo "Waiting for Android emulator..."
           sleep 60
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           docker exec "$EMULATOR_ID" adb wait-for-device
           docker exec "$EMULATOR_ID" adb devices
 
-      - name: Install APK
+      # Copy APK into emulator container
+      - name: Copy APK to Emulator
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           docker cp apps/MatterVerseQA_1.91.apk "$EMULATOR_ID":/tmp/app.apk
+
+      # Install APK
+      - name: Install APK
+        run: |
+          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           docker exec "$EMULATOR_ID" adb install -r /tmp/app.apk
 
-      - name: Start Appium
+      # Start Appium Server
+      - name: Start Appium Server
         run: |
           appium --log-level error &
           sleep 10
 
-      - name: Run Tests
-        run: |
-          pytest -v
+      # Run Tests
+      - name: Run Appium Tests
+        run: pytest -v

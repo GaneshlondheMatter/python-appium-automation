@@ -16,10 +16,10 @@ jobs:
       emulator:
         image: budtmo/docker-android:emulator_11.0
         ports:
-          - 6080:6080   # optional VNC GUI
+          - 6080:6080
           - 5554:5554
           - 5555:5555
-          - 4723:4723   # Appium default port
+          - 4723:4723
         options: --privileged
 
     env:
@@ -33,13 +33,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-        with:
-          lfs: true
 
       - name: Verify APK exists
-        run: |
-          ls -lh apps/
-          test -f apps/MatterVerseQA_1.91.apk
+        run: ls -lh apps/
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -58,64 +54,32 @@ jobs:
 
       - name: Install Appium globally
         run: |
-          npm install -g appium wait-on
+          npm install -g appium
           appium -v
 
-      - name: Wait for Emulator to Boot
+      - name: Wait for Emulator
         run: |
           echo "Waiting for Android emulator..."
           sleep 60
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          echo "Detected emulator: $EMULATOR_ID"
           docker exec "$EMULATOR_ID" adb wait-for-device
           docker exec "$EMULATOR_ID" adb devices
 
       - name: Copy APK into Emulator
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker cp apps/MatterVerseQA_1.91.apk "$EMULATOR_ID":/tmp/MatterVerseQA_1.91.apk
+          docker cp apps/MatterVerseQA_1.91.apk "$EMULATOR_ID":/tmp/app.apk
 
-      - name: Install APK inside Emulator
+      - name: Install APK
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec "$EMULATOR_ID" adb install -r /tmp/MatterVerseQA_1.91.apk
+          docker exec "$EMULATOR_ID" adb install -r /tmp/app.apk
 
       - name: Start Appium Server
         run: |
-          # Kill any old Appium/Node processes if any
-          pkill -f node || true
-
-          # Start Appium in background
           nohup appium --port 4723 --log-level error > appium.log 2>&1 &
-          echo "Waiting for Appium to be ready..."
-          npx wait-on http://localhost:4723/status
 
       - name: Run Python Appium Tests
-        run: |
-          python -m pytest -v
+        run: python -m pytest -v
         env:
           APPIUM_SERVER_URL: ${{ env.APPIUM_SERVER_URL }}
-
-      - name: Verify Screenshots
-        run: |
-          mkdir -p ./Screenshots
-          ls -lh ./Screenshots || echo "No screenshots found"
-
-      - name: Generate Allure Report
-        run: |
-          if [ -d "allure-results" ]; then
-            npx allure generate allure-results --clean -o allure-report
-            echo "Allure report generated."
-          else
-            echo "No allure-results found, skipping report generation."
-          fi
-
-      - name: Upload Test Artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-artifacts
-          path: |
-            ./Screenshots/**/*.png
-            ./allure-report
-          if-no-files-found: ignore

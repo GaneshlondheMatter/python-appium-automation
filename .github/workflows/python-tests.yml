@@ -16,9 +16,9 @@ jobs:
       emulator:
         image: budtmo/docker-android:emulator_11.0
         ports:
-          - 6080:6080   # optional VNC GUI
-          - 5554:5554
-          - 5555:5555
+          - 6080:6080   # VNC/GUI if needed
+          - 5554:5554   # emulator
+          - 5555:5555   # emulator
           - 4723:4723   # Appium default port
         options: --privileged
 
@@ -37,7 +37,7 @@ jobs:
       - name: Verify APK exists
         run: |
           ls -lh apps/
-          file apps/MatterVerseQA_1.91.apk
+          test -f apps/MatterVerseQA_1.91.apk
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -85,27 +85,3 @@ jobs:
         run: python -m pytest -v
         env:
           APPIUM_SERVER_URL: ${{ env.APPIUM_SERVER_URL }}
-
-      - name: Verify Screenshots
-        run: |
-          mkdir -p ./Screenshots
-          ls -lh ./Screenshots || echo "No screenshots found"
-
-      - name: Generate Allure Report
-        run: |
-          if [ -d "allure-results" ]; then
-            npx allure generate allure-results --clean -o allure-report
-            echo "Allure report generated."
-          else
-            echo "No allure-results found, skipping report generation."
-          fi
-
-      - name: Upload Test Artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-artifacts
-          path: |
-            ./Screenshots/**/*.png
-            ./allure-report
-          if-no-files-found: ignore

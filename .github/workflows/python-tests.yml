@@ -19,6 +19,14 @@ jobs:
           - 4723:4723
         options: --privileged
 
+    env:
+      platformName: Android
+      deviceName: Android Emulator
+      andrioid_version: "11"
+      appPackage: com.matter.companion.qa
+      appActivity: .MainActivity
+      appium_server_url: http://127.0.0.1:4723
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -71,7 +79,7 @@ jobs:
       - name: Start Appium Server
         run: |
           appium --log-level error &
-          sleep 10
+          sleep 15
 
       - name: Run Appium Tests
         run: |

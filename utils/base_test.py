@@ -17,10 +17,10 @@ class BaseTest:
 
             options = UiAutomator2Options()
             options.platform_name = os.getenv("platformName")
-            # options.device_name = os.getenv("deviceName")
-            options.device_name = "Android Emulator"
-            # options.platform_version = os.getenv("andrioid_version")
-            options.platform_version = "11"
+            options.device_name = os.getenv("deviceName")
+            # options.device_name = "Android Emulator"
+            options.platform_version = os.getenv("andrioid_version")
+            # options.platform_version = "11"
 
             options.app_package = os.getenv("appPackage")
             options.app_activity = os.getenv("appActivity")

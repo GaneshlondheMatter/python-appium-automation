@@ -70,15 +70,14 @@ jobs:
           docker exec "$EMULATOR_ID" adb wait-for-device
           docker exec "$EMULATOR_ID" adb devices
 
-      - name: Push APK into Emulator
+      - name: Copy APK into Emulator
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec "$EMULATOR_ID" adb push $PWD/apps/MatterVerseQA_1.91.apk /data/local/tmp/app.apk
-
-      - name: Install APK inside Emulator
+          docker cp apps/MatterVerseQA_1.91.apk "$EMULATOR_ID":/tmp/app.apk
+      - name: Install APK
         run: |
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec "$EMULATOR_ID" adb shell pm install -r /data/local/tmp/app.apk
+          docker exec "$EMULATOR_ID" adb install -r /tmp/app.apk
 
       - name: Start Appium Server
         run: |

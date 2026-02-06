@@ -16,9 +16,9 @@ jobs:
       emulator:
         image: budtmo/docker-android:emulator_11.0
         ports:
-          - 6080:6080   # VNC/GUI if needed
-          - 5554:5554   # emulator
-          - 5555:5555   # emulator
+          - 6080:6080   # optional VNC GUI
+          - 5554:5554
+          - 5555:5555
           - 4723:4723   # Appium default port
         options: --privileged
 
@@ -41,16 +41,6 @@ jobs:
           ls -lh apps/
           test -f apps/MatterVerseQA_1.91.apk
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-
-      - name: Install Node dependencies
-        run: |
-          npm install
-          npm install --save-dev appium wait-on
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -60,6 +50,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install Appium globally
+        run: |
+          npm install -g appium wait-on
+          appium -v
 
       - name: Wait for Emulator to Boot
         run: |
@@ -80,13 +80,13 @@ jobs:
           EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
           docker exec "$EMULATOR_ID" adb install -r /tmp/MatterVerseQA_1.91.apk
 
-      - name: Fix Appium permissions
-        run: chmod +x ./node_modules/.bin/appium
-
       - name: Start Appium Server
         run: |
-          chmod +x ./node_modules/.bin/appium
-          nohup ./node_modules/.bin/appium --port 4723 --base-path / > appium.log 2>&1 &
+          # Kill any old Appium/Node processes if any
+          pkill -f node || true
+
+          # Start Appium in background
+          nohup appium --port 4723 --log-level error > appium.log 2>&1 &
           echo "Waiting for Appium to be ready..."
           npx wait-on http://localhost:4723/status
 
@@ -98,9 +98,9 @@ jobs:
 
       - name: Verify Screenshots
         run: |
+          mkdir -p ./Screenshots
           ls -lh ./Screenshots || echo "No screenshots found"
 
-      # Optional: generate Allure report if you have allure-results
       - name: Generate Allure Report
         run: |
           if [ -d "allure-results" ]; then
@@ -110,7 +110,6 @@ jobs:
             echo "No allure-results found, skipping report generation."
           fi
 
-      # Optional: upload artifacts
       - name: Upload Test Artifacts
         if: always()
         uses: actions/upload-artifact@v4

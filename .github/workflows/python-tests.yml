@@ -6,37 +6,35 @@ on:
 
 jobs:
   android-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
 
     steps:
-      - uses: actions/checkout@v4
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install Python dependencies
+      - name: 📦 Install Python dependencies
         run: |
-          pip install --upgrade pip
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Appium
-        run: |
-          npm install -g appium
-          appium -v
-
-      - name: Start Emulator, Install APK & Run Tests
+      - name: 🤖 Start Emulator + Install APK + Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
           target: google_apis
           arch: x86_64
           profile: pixel_3a
+          avd-name: test
           force-avd-creation: true
+          emulator-boot-timeout: 900
+          disable-animations: true
+
           emulator-options: >
             -no-window
             -no-audio
@@ -45,33 +43,30 @@ jobs:
             -no-snapshot
             -memory 2048
             -cores 2
-          disable-animations: true
-          emulator-boot-timeout: 900
 
           script: |
-            echo "Waiting for device..."
+            echo "🔄 Waiting for emulator"
             adb wait-for-device
 
-            echo "Waiting for full system boot..."
-            until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do
+            echo "⏳ Waiting for Android boot to complete"
+            until [[ "$(adb shell getprop sys.boot_completed | tr -d '\r')" == "1" ]]; do
               sleep 5
             done
 
-            echo "System boot completed"
-            adb devices
-
-            echo "Extra stabilization wait (important for CI)"
+            echo "✅ Emulator fully booted"
             sleep 30
 
-            echo "Installing APK"
-            adb install -r MatterVerseQA_1.91.apk
+            adb devices
 
-            echo "Starting Appium"
-            nohup appium --port 4723 --log-level error > appium.log 2>&1 &
+            echo "📦 Installing APK"
+            adb install -r apps/MatterVerseQA_1.91.apk
+
+            echo "🚀 Starting Appium server"
+            nohup appium --base-path /wd/hub --port 4723 --log-level info > appium.log 2>&1 &
 
             sleep 20
 
-            echo "Running tests"
+            echo "🧪 Running pytest"
             python -m pytest -v
 
         env:

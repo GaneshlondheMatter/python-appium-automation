@@ -6,17 +6,11 @@ on:
 
 jobs:
   android-tests:
-    runs-on: macos-latest
+    runs-on: ubuntu-22.04  # ✅ x86_64 runner (IMPORTANT)
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -28,13 +22,12 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install Node.js
+      - name: Install Node & Appium
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install Appium
-        run: |
+      - run: |
           npm install -g appium
           appium -v
 
@@ -43,21 +36,27 @@ jobs:
         with:
           api-level: 30
           target: google_apis
-          arch: x86_64
+          arch: x86_64               # ✅ MATCHES HOST
           profile: Nexus 6
-          avd-name: test
           force-avd-creation: true
+          emulator-options: >
+            -no-window
+            -no-audio
+            -no-boot-anim
+            -gpu swiftshader_indirect
+            -no-snapshot
+          disable-animations: true
           emulator-boot-timeout: 600
 
           script: |
             echo "✅ Emulator booted"
             adb devices
 
-            echo "📦 Installing MatterVerse QA APK"
-            adb install -r apps/MatterVerseQA_1.91.apk
+            echo "📦 Installing APK"
+            adb install -r MatterVerseQA_1.91.apk
 
-            echo "🚀 Starting Appium server"
-            nohup appium --port 4723 --log-level info > appium.log 2>&1 &
+            echo "🚀 Starting Appium"
+            nohup appium --port 4723 --log-level error > appium.log 2>&1 &
 
             sleep 15
 

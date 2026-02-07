@@ -2,50 +2,32 @@ name: Android Appium Python Tests
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   android-tests:
     runs-on: ubuntu-latest
-
-    services:
-      emulator:
-        image: budtmo/docker-android:emulator_11.0
-        ports:
-          - 6080:6080   # optional VNC GUI
-          - 5554:5554   # emulator
-          - 5555:5555   # emulator
-          - 4723:4723   # Appium default port
-        options: --privileged
 
     env:
       platformName: Android
       deviceName: Android Emulator
       android_version: "11"
       appPackage: com.matter.companion.qa
-      appActivity: .MainActivity
-      APPIUM_SERVER_URL: http://127.0.0.1:4723/wd/hub
+      appActivity: com.matter.companion.view.onbording.SplashActivity
+      appium_server_url: http://127.0.0.1:4723/wd/hub
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
-          lfs: true  # if APK is stored via Git LFS
-
-      - name: Verify APK exists
-        run: |
-          echo "Current directory: $(pwd)"
-          ls -lh $PWD/apps/
-          test -f $PWD/apps/MatterVerseQA_1.91.apk
+          lfs: true
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Install Python dependencies
         run: |
@@ -53,62 +35,41 @@ jobs:
           pip install -r requirements.txt
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install Appium globally
+      - name: Install Appium
         run: |
           npm install -g appium
           appium -v
 
-      - name: Wait for Emulator to Boot
-        run: |
-          echo "Waiting for Android emulator..."
-          sleep 60
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec "$EMULATOR_ID" adb wait-for-device
-          docker exec "$EMULATOR_ID" adb devices
+      - name: Run Android Emulator and Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          profile: Nexus 6
+          script: |
+            echo "🚀 Starting Appium server"
+            nohup appium --port 4723 --log-level info > appium.log 2>&1 &
+            sleep 10
 
-      - name: Copy APK into Emulator
-        run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker cp apps/MatterVerseQA_1.91.apk "$EMULATOR_ID":/tmp/app.apk
-      - name: Install APK
-        run: |
-          EMULATOR_ID=$(docker ps -q --filter "ancestor=budtmo/docker-android:emulator_11.0")
-          docker exec "$EMULATOR_ID" adb install -r /tmp/app.apk
+            adb devices
+            python -m pytest -v
 
-      - name: Start Appium Server
-        run: |
-          # Start Appium in background (simple)
-          nohup appium --port 4723 --log-level error > appium.log 2>&1 &
-
-      - name: Run Python Appium Tests
-        run: python -m pytest -v
-        env:
-          APPIUM_SERVER_URL: ${{ env.APPIUM_SERVER_URL }}
-
-      - name: Verify Screenshots
-        run: |
-          mkdir -p ./Screenshots
-          ls -lh ./Screenshots || echo "No screenshots found"
-
-      - name: Generate Allure Report
-        run: |
-          if [ -d "allure-results" ]; then
-            npx allure generate allure-results --clean -o allure-report
-            echo "Allure report generated."
-          else
-            echo "No allure-results found, skipping report generation."
-          fi
-
-      - name: Upload Test Artifacts
+      - name: Upload Appium Logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-artifacts
-          path: |
-            ./Screenshots/**/*.png
-            ./allure-report
+          name: appium-logs
+          path: appium.log
+
+      - name: Upload Screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: Screenshots
           if-no-files-found: ignore

@@ -6,14 +6,12 @@ on:
 
 jobs:
   android-tests:
-    runs-on: ubuntu-22.04  # ✅ x86_64 runner (IMPORTANT)
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -22,12 +20,12 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Install Node & Appium
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - run: |
+      - name: Install Appium
+        run: |
           npm install -g appium
           appium -v
 
@@ -36,8 +34,8 @@ jobs:
         with:
           api-level: 30
           target: google_apis
-          arch: x86_64               # ✅ MATCHES HOST
-          profile: Nexus 6
+          arch: x86_64
+          profile: pixel_3a           # ✅ LIGHTWEIGHT DEVICE
           force-avd-creation: true
           emulator-options: >
             -no-window
@@ -45,22 +43,29 @@ jobs:
             -no-boot-anim
             -gpu swiftshader_indirect
             -no-snapshot
+            -memory 2048
+            -cores 2
           disable-animations: true
-          emulator-boot-timeout: 600
+          emulator-boot-timeout: 900  # ⏳ IMPORTANT
 
           script: |
-            echo "✅ Emulator booted"
+            echo "Waiting for device..."
+            adb wait-for-device
+
+            echo "Checking boot completion..."
+            adb shell getprop sys.boot_completed
+
             adb devices
 
-            echo "📦 Installing APK"
+            echo "Installing APK"
             adb install -r MatterVerseQA_1.91.apk
 
-            echo "🚀 Starting Appium"
+            echo "Starting Appium"
             nohup appium --port 4723 --log-level error > appium.log 2>&1 &
 
-            sleep 15
+            sleep 20
 
-            echo "🧪 Running tests"
+            echo "Running tests"
             python -m pytest -v
 
         env:

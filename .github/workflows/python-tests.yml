@@ -35,7 +35,7 @@ jobs:
           api-level: 30
           target: google_apis
           arch: x86_64
-          profile: pixel_3a           # ✅ LIGHTWEIGHT DEVICE
+          profile: pixel_3a
           force-avd-creation: true
           emulator-options: >
             -no-window
@@ -46,16 +46,22 @@ jobs:
             -memory 2048
             -cores 2
           disable-animations: true
-          emulator-boot-timeout: 900  # ⏳ IMPORTANT
+          emulator-boot-timeout: 900
 
           script: |
             echo "Waiting for device..."
             adb wait-for-device
 
-            echo "Checking boot completion..."
-            adb shell getprop sys.boot_completed
+            echo "Waiting for full system boot..."
+            until [[ "$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')" == "1" ]]; do
+              sleep 5
+            done
 
+            echo "System boot completed"
             adb devices
+
+            echo "Extra stabilization wait (important for CI)"
+            sleep 30
 
             echo "Installing APK"
             adb install -r MatterVerseQA_1.91.apk

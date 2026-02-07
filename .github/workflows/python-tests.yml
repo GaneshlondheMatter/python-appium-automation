@@ -6,11 +6,17 @@ on:
 
 jobs:
   android-tests:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -22,6 +28,16 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Appium
+        run: |
+          npm install -g appium
+          appium -v
+
       - name: Start Emulator, Install APK & Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -32,13 +48,6 @@ jobs:
           avd-name: test
           force-avd-creation: true
           emulator-boot-timeout: 600
-          disable-animations: true
-          emulator-options: >
-            -no-window
-            -gpu swiftshader_indirect
-            -no-snapshot
-            -noaudio
-            -no-boot-anim
 
           script: |
             echo "✅ Emulator booted"

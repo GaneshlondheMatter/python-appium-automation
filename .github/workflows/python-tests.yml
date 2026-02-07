@@ -1,28 +1,16 @@
-name: Android Appium Python Tests
+name: Android Appium Tests
 
 on:
   push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
 
 jobs:
   android-tests:
     runs-on: ubuntu-latest
 
-    env:
-      platformName: Android
-      deviceName: Android Emulator
-      android_version: "11"
-      appPackage: com.matter.companion.qa
-      appActivity: com.matter.companion.view.onbording.SplashActivity
-      appium_server_url: http://127.0.0.1:4723/wd/hub
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          lfs: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -31,45 +19,46 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip
+          pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Appium
-        run: |
-          npm install -g appium
-          appium -v
-
-      - name: Run Android Emulator and Tests
+      - name: Start Emulator, Install APK & Run Tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
           target: google_apis
           arch: x86_64
           profile: Nexus 6
+          avd-name: test
+          force-avd-creation: true
+          emulator-boot-timeout: 600
+          disable-animations: true
+          emulator-options: >
+            -no-window
+            -gpu swiftshader_indirect
+            -no-snapshot
+            -noaudio
+            -no-boot-anim
+
           script: |
+            echo "✅ Emulator booted"
+            adb devices
+
+            echo "📦 Installing MatterVerse QA APK"
+            adb install -r apps/MatterVerseQA_1.91.apk
+
             echo "🚀 Starting Appium server"
             nohup appium --port 4723 --log-level info > appium.log 2>&1 &
-            sleep 10
 
-            adb devices
+            sleep 15
+
+            echo "🧪 Running tests"
             python -m pytest -v
 
-      - name: Upload Appium Logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: appium-logs
-          path: appium.log
-
-      - name: Upload Screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots
-          path: Screenshots
-          if-no-files-found: ignore
+        env:
+          platformName: Android
+          deviceName: Android Emulator
+          android_version: "11"
+          appPackage: com.matter.companion.qa
+          appActivity: com.matter.companion.view.onbording.SplashActivity
+          appium_server_url: http://127.0.0.1:4723/wd/hub

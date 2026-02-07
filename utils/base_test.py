@@ -74,6 +74,9 @@ class BaseTest:
         options.device_name = os.getenv("deviceName")
         options.platform_version = os.getenv("android_version")
 
+        # ✅ Explicit APK path (critical for CI)
+        options.app = os.path.abspath("apps/MatterVerseQA_1.91.apk")
+
         options.app_package = os.getenv("appPackage")
         options.app_activity = os.getenv("appActivity")
 
@@ -90,6 +93,7 @@ class BaseTest:
             "platformVersion": options.platform_version,
             "appPackage": options.app_package,
             "appActivity": options.app_activity,
+            "app": options.app,
         }
 
         for cap, value in required_caps.items():

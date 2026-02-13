@@ -1,8 +1,10 @@
 from utils.base_test import BaseTest
-from utils.login_helper import LoginHelper
+from Helper.login_helper import LoginHelper
+# from utils.login_helper import LoginHelper
 from pages.find_my_matter_page import FindMyMatterPage
 from pages.control_page import ControlPage
-from utils.swipe_helper import SwipeHelper
+from Helper.swipe_helper import SwipeHelper
+# from utils.swipe_helper import SwipeHelper
 import time
 import os
 from PIL import Image

@@ -20,7 +20,7 @@ class SwipeHelper:
         end_y = int(height * 0.25)
 
         self._perform_swipe(start_x, start_y, start_x, end_y)
-        time.sleep(0.8)
+        # time.sleep(0.8)
 
     def scroll_down_until_visible(self, element_func, max_scrolls=10):
         for _ in range(max_scrolls):
@@ -46,7 +46,7 @@ class SwipeHelper:
         end_y = int(height * 0.80)
 
         self._perform_swipe(start_x, start_y, start_x, end_y)
-        time.sleep(0.8)
+        # time.sleep(0.8)
 
     def scroll_up_until_visible(self, element_func, max_scrolls=10):
         for _ in range(max_scrolls):
@@ -72,7 +72,7 @@ class SwipeHelper:
         end_x = int(width * 0.20)
 
         self._perform_swipe(start_x, start_y, end_x, start_y)
-        time.sleep(0.8)
+        # time.sleep(0.8)
 
     # ----------------- Horizontal Swipe Right -----------------
     def swipe_right(self):
@@ -85,7 +85,7 @@ class SwipeHelper:
         end_x = int(width * 0.80)
 
         self._perform_swipe(start_x, start_y, end_x, start_y)
-        time.sleep(0.8)
+        # time.sleep(0.8)
 
     # ----------------- Private Helper Method -----------------
     def _perform_swipe(self, start_x, start_y, end_x, end_y):
@@ -104,7 +104,7 @@ class SwipeHelper:
             .move_to_location(start_x, start_y) \
             .pointer_down() \
             .move_to_location(end_x, end_y) \
-            .pause(0.6) \
+            .pause(0.2) \
             .pointer_up()
 
         actions.perform()

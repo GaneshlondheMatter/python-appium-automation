@@ -15,40 +15,32 @@ class LoginHelper:
         login_page = LoginPage(driver)
 
         try:
-            # 1️⃣ App launch screen
+            # 1️ App launch screen
             print("\nStep 1: Waiting for welcome screen...")
             login_page.wait_for_welcome_screen()
 
-            # 2️⃣ Navigate forward
+            # 2️ Navigate forward
             print("\nStep 2: Clicking forward arrow...")
             login_page.click_forward_arrow()
 
-            # 3️⃣ Phone number screen
+            # 3️ Phone number screen
             print("\nStep 3: Waiting for phone number screen...")
             login_page.wait_for_phone_screen()
             login_page.enter_phone_number(os.getenv("phoneNumber"))
 
-            # 4️⃣ Wait for OTP screen and enter OTP
+            # 4️ Wait for OTP screen and enter OTP
             print("\nStep 4: Waiting for OTP screen...")
-            # Wait a moment for OTP screen to appear
             time.sleep(3)
             login_page.enter_otp(os.getenv("OTP"))
 
-            # 5️⃣ Login
+            # 5️ Login
             print("\nStep 5: Clicking login...")
             login_page.click_login()
 
-            # 6️⃣ Verify login success (optional - add your verification)
+            # 6️ Verify login success (optional - add your verification)
             print("\nStep 6: Verifying login success...")
             time.sleep(5)  # Wait for login to complete
-            
-            # You can add verification here
-            # Example: Check if login successful by looking for home screen elements
-            
-            print("\n" + "="*50)
-            print("LOGIN FLOW COMPLETED SUCCESSFULLY")
-            print("="*50)
-            
+                        
             return True
             
         except Exception as e:

@@ -1,8 +1,9 @@
 from utils.base_test import BaseTest
-from utils.login_helper import LoginHelper
 from pages.control_page import ControlPage
 from pages.find_A_Route_Page import FindARoutePage
-from utils.swipe_helper import SwipeHelper
+from Helper.login_helper import LoginHelper
+from Helper.swipe_helper import SwipeHelper
+from Helper.scroll_helper import ScrollHelper
 import time
 
 class TestFindARouteFlow(BaseTest):
@@ -15,18 +16,16 @@ class TestFindARouteFlow(BaseTest):
         control = ControlPage(driver)
         find_a_route = FindARoutePage(driver)
         swipe = SwipeHelper(driver)
+        scrollHelper = ScrollHelper(driver)
 
         # -------- Login --------
         LoginHelper.login_into_matterverse(driver)
 
-        control.control_button().is_displayed()
-        swipe.scroll_down_until_visible(
-            control.find_my_matter_button,
-            max_scrolls=8
-        )
-        control.find_a_route_button().click()
+        #-------Scroll to Find-My-Matter-----
+        scrollHelper.scroll_to_text_contains('FIND MY MATTER')
 
-        # find_a_route.header().is_displayed()
+        control.find_a_route_button().click()
+        find_a_route.header().is_displayed()
 
         # -------- 1. Search Location --------
         time.sleep(2)

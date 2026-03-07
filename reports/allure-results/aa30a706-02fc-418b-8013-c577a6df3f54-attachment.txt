@@ -1,0 +1,5 @@
+✅ UI Login Successful
+Extracted Token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJHYW5lc2g5ODp3ZWJzaXRlOjkxNDU0OTY3MDQ6NzE0ODpudWxsOm51bGw6bnVsbDpudWxsOjo6NjgwMzgxYTQtYTdhZi00ZGNkLWE2MTYtMjAzODIxNjQzNTBlOmdhbmVzaC5sb25kaGVAbWF0dGVyLmluOis5MSIsImV4cCI6MTc3NDA4NjA2OCwiaWF0IjoxNzcyNzkwMDY4fQ.zJNbdu28MsSe_ApYPuy8Vm0pWGzRtDEW9Tjc6b5QfWm9PFChc5YwbvkhTHgbv7v-gYYgZBq-H47s3SQc20kvfg
+Delete Status: 200
+Delete Response: {"data":"9145496704","timeStamp":"2026-03-06 09:41:12","error":false,"message":"Deleted Successfully.","type":null,"responseCode":200,"httpStatus":"OK"}
+✅ User deleted successfully

@@ -4,6 +4,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
 
 class DrivingLicensePage:
+      
+    def __init__(self, driver):
+        self.driver = driver
+        self.wait = WebDriverWait(driver, 10)
 
     # ------------------- LOCATORS -------------------
 
@@ -130,11 +134,6 @@ class DrivingLicensePage:
         By.XPATH,   
         "(//android.widget.ImageView[@resource-id='com.sec.android.gallery3d:id/thumbnail'])[5]"   
     )
-
-    # ------------------- INIT -------------------
-    def __init__(self, driver):
-        self.driver = driver
-        self.wait = WebDriverWait(driver, 10)
 
     # ------------------- WAIT + CLICK METHOD -------------------
 

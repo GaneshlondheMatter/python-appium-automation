@@ -1,15 +1,12 @@
 from utils.base_test import BaseTest
-from Helper.login_helper import LoginHelper
-# from utils.login_helper import LoginHelper
 from pages.find_my_matter_page import FindMyMatterPage
 from pages.control_page import ControlPage
+from Helper.login_helper import LoginHelper
 from Helper.swipe_helper import SwipeHelper
-# from utils.swipe_helper import SwipeHelper
 import time
 import os
 from PIL import Image
 import numpy as np
-
 
 # ---------- Screenshot Helpers ----------
 def take_screenshot(driver, file_name):
@@ -46,23 +43,24 @@ class TestFindMyMatterFlow(BaseTest):
 
         find_matter = FindMyMatterPage(driver)
         control_page = ControlPage(driver)
-        swipe = SwipeHelper(driver)
+        # swipe = SwipeHelper(driver)
 
         # Scroll & click Find My Matter
-        swipe.scroll_down_until_visible(
-            control_page.find_my_matter_button,
-            max_scrolls=8
-        )
+        # swipe.scroll_down_until_visible(
+        #     control_page.find_my_matter_button,
+        #     max_scrolls=8
+        # )
         control_page.find_my_matter_button().click()
 
         # ---------- Screenshot 1 ----------
         find_matter.click_navigate_to_vehicle()
-        time.sleep(2)
+        find_matter.road_icon().is_displayed()  # Wait for the road icon to ensure map is loaded
+        # time.sleep(2)
         screenshot_1 = take_screenshot(driver, "after_navigate.png")
 
         # ---------- Screenshot 2 ----------
         find_matter.click_recenter()
-        time.sleep(2)
+        # time.sleep(2)
         screenshot_2 = take_screenshot(driver, "after_recenter.png")
 
         # ---------- Compare Screenshots ----------

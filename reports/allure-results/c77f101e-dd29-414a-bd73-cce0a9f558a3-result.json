@@ -1,0 +1,1 @@
+{"name": "test_complete_bike_booking_flow", "status": "skipped", "start": 1772102883228, "stop": 1772102883228, "uuid": "e3094a4e-7496-474d-ae99-58abba4be901", "testCaseId": "48b3206b4decf41423efb0ff9bf32da5", "fullName": "tests.test_book_Aera_flow.TestBikeBookingFlow#test_complete_bike_booking_flow", "titlePath": ["tests", "test_book_Aera_flow.py", "TestBikeBookingFlow"]}

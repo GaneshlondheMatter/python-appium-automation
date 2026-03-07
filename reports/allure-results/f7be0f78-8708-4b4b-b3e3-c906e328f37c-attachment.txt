@@ -1,0 +1,2 @@
+Delete Status (Static Token): 417
+Delete Response (Static Token): 

@@ -33,7 +33,7 @@ class VehicleSettingsPage:
 
     VEHICLE_SETTINGS_LINK = (
         By.XPATH,
-        "//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvbikeDetails']"
+        '//android.widget.TextView[@resource-id="com.matter.companion.qa:id/tvbikeDetails"]'
     )
 
     # ------------------- COMMON CLICK METHOD -------------------

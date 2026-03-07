@@ -34,12 +34,12 @@ class ControlPage:
 
     FIND_MY_MATTER_BTN = (
         By.XPATH,
-        "//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvfindMyMatter']"
+        "//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvText' and contains(@text,'Find Matter')]"
     )
 
     FIND_A_ROUTE_BTN = (
         By.XPATH,
-        "//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvFindARoute']"
+        "//android.widget.TextView[@resource-id='com.matter.companion.qa:id/tvText' and contains(@text,'Route')]"
     )
 
     # ---------- Element getters ----------

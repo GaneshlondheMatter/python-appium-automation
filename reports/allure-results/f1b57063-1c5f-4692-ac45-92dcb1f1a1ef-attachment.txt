@@ -1,0 +1,8 @@
+🌐 Initializing Web driver...
+✅ Web driver started successfully
+Login popup not found
+Searched for Samsung Galaxy S24
+Search results verified
+Clicking on product: Samsung Galaxy S24 5G Snapdragon (Marble Gray, 256 GB)
+Switched to new tab
+🛑 Web driver quit successfully

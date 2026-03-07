@@ -23,6 +23,11 @@ class FindMyMatterPage:
         "//android.widget.TextView[@text='Navigate to Vehicle']"
     )
 
+    ROAD_ICON = (
+        By.XPATH,
+        "//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/iv_road']"
+    )
+
     NORTH_DIRECTION = (
         By.XPATH,
         "//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/tvNorthDirection']"
@@ -116,6 +121,10 @@ class FindMyMatterPage:
     def buzz_my_vehicle(self):
         return self.wait.until(
             EC.presence_of_element_located(self.BUZZ_MY_VEHICLE)
+        )
+    def road_icon(self):
+        return self.wait.until(
+            EC.presence_of_element_located(self.ROAD_ICON)
         )
 
     def mappls_map(self):

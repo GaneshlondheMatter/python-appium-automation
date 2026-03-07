@@ -1,0 +1,12 @@
+Initializing Appium driver...
+Error starting Appium driver: Message: Could not find a connected Android device in 20000ms
+Stacktrace:
+UnknownError: Could not find a connected Android device in 20000ms
+    at getResponseForW3CError (C:\Users\ganesh.londhe\AppData\Roaming\npm\node_modules\appium\node_modules\@appium\base-driver\lib\protocol\errors.ts:1103:34)
+    at asyncHandler (C:\Users\ganesh.londhe\AppData\Roaming\npm\node_modules\appium\node_modules\@appium\base-driver\lib\protocol\protocol.ts:507:57)
+The above error is caused by
+Error: Could not find a connected Android device in 20000ms
+    at ADB.getDevicesWithRetry (C:\Users\ganesh.londhe\.appium\node_modules\appium-uiautomator2-driver\node_modules\appium-adb\lib\tools\system-calls.js:296:13)
+    at AndroidUiautomator2Driver.getDeviceInfoFromCaps (C:\Users\ganesh.londhe\.appium\node_modules\appium-uiautomator2-driver\node_modules\appium-android-driver\lib\commands\device\common.js:41:21)
+    at AndroidUiautomator2Driver.createSession (C:\Users\ganesh.londhe\.appium\node_modules\appium-uiautomator2-driver\lib\driver.ts:361:30)
+    at AppiumDriver.createSession (C:\Users\ganesh.londhe\AppData\Roaming\npm\node_modules\appium\lib\appium.js:360:35)

@@ -1,0 +1,19 @@
+===== Starting Find A Route Test Flow =====
+Act I - Driver setup completed
+Act II - Logging into MatterVerse application
+Assert I - Login successful
+Act III - Scrolling to FIND MY MATTER section
+Act IV - Clicking on Find A Route button
+Assert II - Find A Route screen opened successfully
+Act V - Clicking Find A Route search field
+Act VI - Entering location: Bangalore
+Act VII - Selecting random location from suggestions
+Assert III - Verifying location details card
+Assert IV - Location Name displayed: Kempegowda International Airport
+Assert V - Location Address displayed: BIAL Road, Devanahalli, Bengaluru, Karnataka, 560300
+Assert VI - Location action buttons verified
+Act VIII - Clicking View Route button
+Act IX - Choosing start location
+Act X - Selecting random start location
+Assert VII - Verifying route details card
+Act XI - Opening Directions page

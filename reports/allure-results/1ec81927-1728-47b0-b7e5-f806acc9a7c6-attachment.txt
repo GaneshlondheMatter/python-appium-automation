@@ -1,0 +1,28 @@
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:19 ===== Starting Find A Route Test Flow =====
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:24 Driver setup completed
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:32 Logging into MatterVerse application
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:34 Login successful
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:37 Scrolling to FIND MY MATTER section
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:40 Clicking on Find A Route button
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:43 Find A Route screen opened successfully
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:47 Clicking Find A Route search field
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:52 Trying to enter location: Bangalore
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:71 Selecting random location from suggestions
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:75 Verifying location details card
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:81 Location Name: Bengaluru
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:82 Location Address: Karnataka
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:88 Location action buttons verified
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:91 Clicking View Route button
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:94 Choosing start location
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:99 Selecting random start location
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:103 Verifying route details card
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:109 Opening Directions page
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:112 Directions page opened successfully
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:115 Verifying directions page elements
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:121 Opening route preview
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:129 Route preview verified
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:132 Clicking Push To Vehicle button
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:137 Push To Vehicle confirmation screen displayed
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:140 Clicking Proceed button
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:147 Route pushed successfully
+[32mINFO    [0m test_find_A_Route:test_find_A_Route.py:150 Clicking OK button

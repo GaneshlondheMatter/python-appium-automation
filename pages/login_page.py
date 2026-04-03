@@ -30,17 +30,20 @@ class LoginPage:
 
     NEXT_ARROW_BTN = (
         By.XPATH,
-        "//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivNext']"
+        # "//android.widget.ImageView[@resource-id='com.matter.companion.qa:id/ivNext']"
+       "//android.widget.ImageView[@resource-id='com.matter.matterverse:id/ivNext']"
     )
 
     PHONE_NUMBER_INPUT = (
         By.XPATH,
-        "//android.widget.EditText[@resource-id='com.matter.companion.qa:id/edtPhoneNumber']"
+        # "//android.widget.EditText[@resource-id='com.matter.companion.qa:id/edtPhoneNumber']"
+        "//android.widget.EditText[@resource-id='com.matter.matterverse:id/edtPhoneNumber']"
     )
 
     GET_OTP_BTN = (
         By.XPATH,
-        "//android.widget.Button[@resource-id='com.matter.companion.qa:id/buttonGetOtp']"
+        # "//android.widget.Button[@resource-id='com.matter.companion.qa:id/buttonGetOtp']"
+        "//android.widget.Button[@resource-id='com.matter.matterverse:id/buttonGetOtp']"
     )
 
     OTP_INPUT_FIELDS = (
@@ -50,8 +53,9 @@ class LoginPage:
 
     LOGIN_BTN = (
         By.XPATH,
-        "//android.widget.Button[@resource-id='com.matter.companion.qa:id/buttonlogin']"
-    )
+        # "//android.widget.Button[@resource-id='com.matter.companion.qa:id/buttonlogin']"
+            "//android.widget.Button[@resource-id='com.matter.matterverse:id/buttonlogin']"
+        )
 
     # ---------- ACTIONS ----------
 

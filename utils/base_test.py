@@ -3,16 +3,24 @@ from appium.options.android import UiAutomator2Options
 import os
 from dotenv import load_dotenv
 
+# ✅ ADD THIS
+from utils.ssh_tunnel import start_ssh_tunnel, stop_ssh_tunnel
+
 load_dotenv()
 
 class BaseTest:
 
     driver = None
+    ssh_process = None   # ✅ ADD THIS
 
     @staticmethod
     def setup():
         try:
             print("Initializing Appium driver...")
+
+            # ✅ START SSH TUNNEL (ADDED)
+            if BaseTest.ssh_process is None:
+                BaseTest.ssh_process = start_ssh_tunnel()
 
             options = UiAutomator2Options()
             options.platform_name = os.getenv("platformName")
@@ -43,3 +51,8 @@ class BaseTest:
         if BaseTest.driver:
             BaseTest.driver.quit()
             print("Driver quit successfully")
+
+        # ✅ STOP SSH TUNNEL (ADDED)
+        if BaseTest.ssh_process:
+            stop_ssh_tunnel(BaseTest.ssh_process)
+            BaseTest.ssh_process = None

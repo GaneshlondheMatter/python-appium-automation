@@ -1,0 +1,4 @@
+2026-03-09 08:31:15,783 | INFO | Initializing Appium driver
+2026-03-09 08:31:27,251 | INFO | Appium driver started successfully
+2026-03-09 08:31:27,251 | INFO | Login step 1: wait for welcome screen
+2026-03-09 08:31:28,623 | INFO | Appium driver quit successfully

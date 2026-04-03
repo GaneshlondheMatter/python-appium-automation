@@ -1,0 +1,25 @@
+Initializing Appium driver...
+✅ Appium driver started successfully
+
+Step 1: Waiting for welcome screen...
+
+Step 2: Clicking forward arrow...
+
+Step 3: Waiting for phone number screen...
+
+Step 4: Waiting for OTP screen...
+
+Fetching OTP from database...
+❌ Database connection failed: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user "mmw_read_access"
+
+❌ Database error fetching OTP (attempt 1): connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user "mmw_read_access"
+
+
+✗ Login failed with error: connection to server at "localhost" (::1), port 5432 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5432 failed: FATAL:  password authentication failed for user "mmw_read_access"
+

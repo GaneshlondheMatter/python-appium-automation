@@ -1,0 +1,19 @@
+Initializing Appium driver...
+✅ Appium driver started successfully
+
+Step 1: Waiting for welcome screen...
+
+Step 2: Clicking forward arrow...
+
+Step 3: Waiting for phone number screen...
+
+Step 4: Waiting for OTP screen...
+
+Fetching OTP from database...
+❌ PROD Database connection failed: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "mmw_read_access"
+
+❌ PROD DB error fetching OTP (attempt 1): connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "mmw_read_access"
+
+
+✗ Login failed with error: connection to server at "127.0.0.1", port 5432 failed: FATAL:  password authentication failed for user "mmw_read_access"
+
